@@ -1,0 +1,4 @@
+# File lớn (GitHub chặn file trên 100 MB) đi qua Git LFS
+source_code/demo.html filter=lfs diff=lfs merge=lfs -text
+source_code/data/final_dataset_*.csv filter=lfs diff=lfs merge=lfs -text
+*.npz filter=lfs diff=lfs merge=lfs -text

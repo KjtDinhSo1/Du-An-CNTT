@@ -1,0 +1,16 @@
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Mô hình PhoBERT tải về (tải lại khi chạy phobert_embed.py) và file tạm khi lưu vector
+source_code/.hf_cache/
+source_code/data/*.tmp.npz
+
+# Công cụ / máy cá nhân
+.impeccable/
+.claude/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
