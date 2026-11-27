@@ -14,3 +14,6 @@ source_code/data/*.tmp.npz
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Poster chỉ giữ bản .pptx trên repo
+poster.pdf
