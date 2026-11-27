@@ -1,0 +1,16 @@
+# Bắt buộc để chạy source.ipynb (đã thử với Python 3.11)
+pandas>=2.0
+numpy>=1.24
+scipy>=1.10
+scikit-learn>=1.3
+jupyter            # hoặc mở notebook bằng VS Code (cần ipykernel)
+
+# Tùy chọn
+tqdm               # thanh tiến trình
+matplotlib         # biểu đồ phân bố
+openpyxl           # ghi bản .xlsx (chỉ khi file .xlsx đã có trong data/)
+pyarrow            # ghi bản .parquet (chỉ khi file .parquet đã có trong data/)
+
+# Chỉ cần khi tính lại vector PhoBERT bằng phobert_embed.py (notebook chỉ đọc file vector có sẵn)
+torch>=2.0
+transformers>=4.40
