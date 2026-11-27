@@ -7,10 +7,10 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 HERE = Path(__file__).resolve().parent
-os.environ.setdefault("HF_HOME", str(HERE / ".hf_cache"))       # mô hình nằm ở ổ D:, không tải lại
+os.environ.setdefault("HF_HOME", str(HERE / ".hf_cache"))
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 os.environ.setdefault("MPLBACKEND", "Agg")
-SAVE_EVERY = 480                                                 # số bài giữa hai lần lưu (~5 phút trên CPU)
+SAVE_EVERY = 480
 
 def other_instances():
     """Số bản phobert_embed.py khác đang chạy. Hai bản cùng ghi một file vector sẽ giẫm lên nhau (FileNotFoundError, mất tiến độ)."""
@@ -29,22 +29,22 @@ if other_instances():
 cells = ["".join(c["source"]) for c in json.load(open(HERE / "source.ipynb", encoding="utf8"))["cells"] if c["cell_type"] == "code"]
 ns = {"__name__": "phobert_embed"}
 for src in cells:
-    if "uni_vec = CountVectorizer" in src:                       # ô tách từ: chỉ lấy phần định nghĩa segment()
-        exec(src.split("# Tách theo TỪNG DÒNG")[0], ns)
+    if "uni_vec = CountVectorizer" in src:
+        exec(src.split("\nline_tokens = ")[0], ns)
         break
     exec(src, ns)
 pb_cell = next(s for s in cells if "def phobert_encode" in s)
-exec(pb_cell.split("\nif CFG.PHOBERT_ENABLED:")[0], ns)          # các hàm PhoBERT, không chạy phần chính
+exec(pb_cell.split("\nif CFG.PHOBERT_ENABLED:")[0], ns)
 CFG, df, np = ns["CFG"], ns["df_meaning"], ns["np"]
 assert ns["OUT_DIR"] is not None, "Không tìm thấy dữ liệu thật trong thư mục data"
-CFG.PHOBERT_BATCH = 16                                           # lô nhỏ hợp với máy 8 GB RAM
+CFG.PHOBERT_BATCH = 16
 
 cache_path = ns["OUT_DIR"] / "phobert_embeddings.npz"
-tmp_path = ns["OUT_DIR"] / f"phobert_embeddings.{os.getpid()}.tmp.npz"   # riêng cho từng tiến trình
+tmp_path = ns["OUT_DIR"] / f"phobert_embeddings.{os.getpid()}.tmp.npz"
 cache = {}
 if cache_path.exists():
-    with np.load(cache_path) as z:                               # đóng file ngay: Windows không cho ghi đè file đang mở
-        cache = dict(zip(z["keys"].tolist(), z["vecs"]))         # giữ float16 để tiết kiệm RAM
+    with np.load(cache_path) as z:
+        cache = dict(zip(z["keys"].tolist(), z["vecs"]))
 keys = [ns["doc_key"](t, l) for t, l in zip(df["title"], df["lyrics"])]
 todo = [i for i, k in enumerate(keys) if k not in cache]
 if "--limit" in sys.argv:
@@ -55,7 +55,7 @@ print(f"\nTổng {len(df):,} bài | đã có vector: {len(df) - len([k for k in 
 def save():
     """Ghi ra file tạm rồi đổi tên: tắt máy đúng lúc đang ghi cũng không làm hỏng file cũ."""
     np.savez_compressed(tmp_path, keys=np.array(list(cache), dtype=np.int64), vecs=np.vstack(list(cache.values())).astype(np.float16))
-    for attempt in range(30):                                    # notebook có thể đang đọc file: chờ rồi thử lại, không bỏ dở
+    for attempt in range(30):
         try:
             os.replace(tmp_path, cache_path)
             return

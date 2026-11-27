@@ -1,11 +1,4 @@
-"""Kiểm tra tự động cho các hàm lõi của source.ipynb và các file nhãn tay.
-
-Chạy từ thư mục source_code:
-    python -m unittest discover -s tests -v
-
-Các hàm được nạp thẳng từ notebook (các ô cấu hình, từ khóa, làm sạch), nên kiểm tra luôn khớp với code đang nộp,
-không cần chép code ra file riêng. Không đọc bộ dữ liệu 61.525 bài, chạy xong trong vài giây.
-"""
+"""Kiểm tra tự động cho các hàm lõi của source.ipynb và các file nhãn tay."""
 import io
 import json
 import contextlib
@@ -59,7 +52,7 @@ class TestNormalize(unittest.TestCase):
 class TestCleaning(unittest.TestCase):
     def test_genre_repair_longest_key_first(self):
         clean = NB["clean_single_col"]
-        self.assertEqual(clean("Nh?c Tr? Tình"), "Nhạc Trữ Tình")          # không bị "Tr?" thay mất một phần
+        self.assertEqual(clean("Nh?c Tr? Tình"), "Nhạc Trữ Tình")
         self.assertEqual(clean("Nh?c Vi?t Nam"), "Nhạc Việt Nam")
 
     def test_unpack_list_string(self):
